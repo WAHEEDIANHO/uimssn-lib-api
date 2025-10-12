@@ -1,0 +1,18 @@
+export enum FacultyEnum {
+  AGRICULTURE = 'Faculty of Agriculture',
+  ARTS = 'Faculty of Arts',
+  BASIC_MEDICAL_SCIENCE = 'Faculty of Basic Medical Science',
+  CLINICAL_SCIENCE = 'Faculty of Clinical Science',
+  DENTISTRY = 'Faculty of Dentistry',
+  ECONOMICS_AND_MANAGEMENT_SCIENCE = 'Faculty of Economics and Management Science',
+  ENVIRONMENTAL_DESIGN_AND_MANAGEMENT = 'Faculty of Environmental Design and Management',
+  LAW = 'Faculty of Law',
+  PHARMACY = 'Faculty of Pharmacy',
+  PUBLIC_HEALTH = 'Faculty of Public Health',
+  RENEWABLE_NATURAL_RESOURCES = 'Faculty of Renewable Natural Resources',
+  SCIENCE = 'Faculty of Science',
+  SOCIAL_SCIENCE = 'Faculty of Social Science',
+  COMPUTING = 'Faculty of Computing',
+  TECHNOLOGY = 'Faculty of Technology',
+  VETERINARY_MEDICINE = 'Faculty of Veterinary Medicine',
+}

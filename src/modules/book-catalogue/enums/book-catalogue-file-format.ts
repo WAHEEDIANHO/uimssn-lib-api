@@ -1,0 +1,1 @@
+export enum BookCatalogueFileFormatEnum { PDF = 'PDF', EPUB = 'EPUB' }
