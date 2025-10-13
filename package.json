@@ -20,9 +20,9 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migrate": "node generate-migration.js",
     "typeorm:migrate:generate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate src/database/migrations/MigrationName -d src/config/typeorm.config.ts",
-    "typeorm:migrate:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d src/built-in/config/typeorm.config.ts",
-    "typeorm:migrate:revert": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:revert -d src/built-in/config/typeorm.config.ts",
-    "typeorm:migrate:show": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:show -d src/built-in/config/typeorm.config.ts"
+    "typeorm:migrate:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d src/base_module/config/typeorm.config.ts",
+    "typeorm:migrate:revert": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:revert -d src/base_module/config/typeorm.config.ts",
+    "typeorm:migrate:show": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:show -d src/base_module/config/typeorm.config.ts"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",

@@ -1,10 +1,10 @@
-import { DbEntity } from '../../../built-in/utils/abstract/database/db-entity';
-import { IEntity } from '../../../built-in/utils/abstract/database/i-enity';
 import { Column, Entity } from 'typeorm';
 import { BookCatalogueCategoriesEnum } from '../enums/book-catalogue-categories..enum';
 import { BookCatalogueTypeEnum } from '../enums/book-catalogue-type.enum';
 import { BookCatalogueFileFormatEnum } from '../enums/book-catalogue-file-format';
 import { FacultyEnum } from '../enums/faculty.enum';
+import { DbEntity } from '@uimssn/base_module/utils/abstract/database/db-entity';
+import { IEntity } from '@uimssn/base_module/utils/abstract/database/i-enity';
 
 @Entity('tbl_book_catalogues')
 export class BookCatalogue extends DbEntity implements IEntity {

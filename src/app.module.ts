@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UtilsModule } from './built-in/utils/utils.module';
-import { AuthModule } from './built-in/auth/auth.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { EmailServiceModule } from './built-in/email-service/email-service.module';
-import { UserModule } from './built-in/user/user.module';
-import { FileUploadModule } from './built-in/file-upload/file-upload.module';
-import { typeOrmModuleFactory } from './built-in/config/typeorm.config';
+import { typeOrmModuleFactory } from '@uimssn/base_module/config/typeorm.config';
 import { JwtModule } from '@nestjs/jwt';
-import { LogsModule } from './built-in/logs/logs.module';
 import { BookCatalogueModule } from './modules/book-catalogue/book-catalogue.module';
+import { AuthModule } from './base_module/auth/auth.module';
+import { UtilsModule } from './base_module/utils/utils.module';
+import { LogsModule } from './base_module/logs/logs.module';
+import { UserModule } from './base_module/user/user.module';
+import { EmailServiceModule } from './base_module/email-service/email-service.module';
+import { FileUploadModule } from './base_module/file-upload/file-upload.module';
 
 @Module({
   imports: [

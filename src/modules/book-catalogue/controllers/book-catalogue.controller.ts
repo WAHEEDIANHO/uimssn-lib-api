@@ -17,9 +17,9 @@ import { CreateBookCatalogueDto } from '../dto/create-book-catalogue.dto';
 import { UpdateBookCatalogueDto } from '../dto/update-book-catalogue.dto';
 import { Request, Response } from 'express';
 import { BookCatalogue } from '../entities/book-catalogue.entity';
-import { PaginationQueryDto } from '../../../built-in/utils/dto/pagination-query.dto';
-import { AuthGuard } from '../../../built-in/auth/guard/auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '@uimssn/base_module/auth/guard/auth.guard';
+import { PaginationQueryDto } from '@uimssn/base_module/utils/dto/pagination-query.dto';
 
 @Controller('book-catalogue')
 export class BookCatalogueController {

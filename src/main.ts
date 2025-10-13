@@ -2,21 +2,20 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston/dist/winston.constants';
-import { AppExceptionFilter } from './built-in/app-exception.filter';
-import { ResponseFormatterMiddleware } from './built-in/utils/response-formatter.middleware';
 import * as basicAuth from 'express-basic-auth';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { WinstonModule } from 'nest-winston';
-import { loggerConfig } from './built-in/config/logger.config';
+import { loggerConfig } from '@uimssn/base_module/config/logger.config';
 import * as compression from 'compression';
 import * as bodyParser from 'body-parser';
 import { VersioningType } from '@nestjs/common';
-import { ValidationPipe } from './built-in/utils/validation.pipe';
 import { ConfigService } from '@nestjs/config';
-import { AppDataSource } from './built-in/config/typeorm.config';
+import { AppDataSource } from '@uimssn/base_module/config/typeorm.config';
 import { Logger } from '@nestjs/common';
+import { AppExceptionFilter } from '@uimssn/base_module/app-exception.filter';
+import { ValidationPipe } from '@uimssn/base_module/utils/validation.pipe';
+import { ResponseFormatterMiddleware } from '@uimssn/base_module/utils/response-formatter.middleware';
 
 
 

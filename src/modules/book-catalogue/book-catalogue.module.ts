@@ -3,8 +3,7 @@ import { BookCatalogueService } from './services/book-catalogue.service';
 import { BookCatalogueController } from './controllers/book-catalogue.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BookCatalogue } from './entities/book-catalogue.entity';
-import { AuthModule } from '../../built-in/auth/auth.module';
-import { UtilsModule } from '../../built-in/utils/utils.module';
+import { UtilsModule } from '@uimssn/base_module/utils/utils.module';
 
 @Module({
   imports: [
