@@ -111,8 +111,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe())
 
   const config = new DocumentBuilder()
-    .setTitle('Edu Bridge API')
-    .setDescription('API documentation for the Edu Bridge application')
+    .setTitle(configService.get<string>('APP_NAME') || '')
+    .setDescription(`API documentation for the ${configService.get<string>('APP_NAME')} application`)
     .setVersion('1.0')
     .addBearerAuth()
     .build();
