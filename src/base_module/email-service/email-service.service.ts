@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import axios from 'axios';
 import {
   IEmailParamsBase,
   IEmailParamsWithAction,
   IOtpMailTemplateParamType,
   ISessionCompleteNotification,
   IVerificationMailTemplateParamType,
-} from './types/i-verification-mail-template-param.type';
-import { ConfigService } from '@nestjs/config';
-import axios from 'axios';
+} from '@uimssn/base_module/email-service/types/i-verification-mail-template-param.type';
 
 @Injectable()
 export class EmailServiceService {

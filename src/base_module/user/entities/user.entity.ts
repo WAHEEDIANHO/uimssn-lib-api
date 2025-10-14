@@ -3,19 +3,12 @@ import {
   BeforeUpdate,
   Column,
   Entity,
-  OneToOne,
-  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { DbEntity } from '../../utils/abstract/database/db-entity';
-import { IEntity } from '../../utils/abstract/database/i-enity';
-import { GenderEnum } from '../enums/gender.enum';
-import { AccountStatusEnum } from '../enums/account-status.enum';
-import { RoleEnum } from '../enums/role.enum';
-// import { Entity as DbEntity } from '../../utils/abstract/database/entity';
-// import { IEntity } from '../../utils/abstract/database/i.entity';
-// import { Student } from '../../student/entities/student.entity';
-// import { Teacher } from '../../teacher/entities/teacher.entity';
-//
+import { IEntity } from '@uimssn/base_module/utils/abstract/database/i-enity';
+import { DbEntity } from '@uimssn/base_module/utils/abstract/database/db-entity';
+import { GenderEnum } from '@uimssn/base_module/user/enums/gender.enum';
+import { AccountStatusEnum } from '@uimssn/base_module/user/enums/account-status.enum';
+import { RoleEnum } from '@uimssn/base_module/user/enums/role.enum';
 
 export enum UserRole {
   ADMIN = 'admin',

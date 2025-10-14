@@ -1,5 +1,4 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as basicAuth from 'express-basic-auth';
@@ -16,6 +15,7 @@ import { Logger } from '@nestjs/common';
 import { AppExceptionFilter } from '@uimssn/base_module/app-exception.filter';
 import { ValidationPipe } from '@uimssn/base_module/utils/validation.pipe';
 import { ResponseFormatterMiddleware } from '@uimssn/base_module/utils/response-formatter.middleware';
+import { AppModule } from '@uimssn/app.module';
 
 
 

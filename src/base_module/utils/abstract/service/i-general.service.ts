@@ -1,8 +1,6 @@
-import { IEntity } from '../database/i-enity';
-import { FindOptionsWhere } from 'typeorm';
-import { PaginatedResultDto } from '../../dto/paginated-result.dto';
-import { PaginationQueryDto } from '../../dto/pagination-query.dto';
-import { UnprocessableEntityException } from '@nestjs/common';
+import { IEntity } from '@uimssn/base_module/utils/abstract/database/i-enity';
+import { PaginationQueryDto } from '@uimssn/base_module/utils/dto/pagination-query.dto';
+import { PaginatedResultDto } from '@uimssn/base_module/utils/dto/paginated-result.dto';
 
 export interface IGeneralService<T extends IEntity> {
   create(data: T): Promise<boolean>;

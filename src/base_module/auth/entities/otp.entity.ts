@@ -1,6 +1,7 @@
 import { Column, Entity } from 'typeorm';
-import { DbEntity } from '../../utils/abstract/database/db-entity';
-import { IEntity } from '../../utils/abstract/database/i-enity';
+import { DbEntity } from '@uimssn/base_module/utils/abstract/database/db-entity';
+import { IEntity } from '@uimssn/base_module/utils/abstract/database/i-enity';
+
 
 
 @Entity("tbl_otps")

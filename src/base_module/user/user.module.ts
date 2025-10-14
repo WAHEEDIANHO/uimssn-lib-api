@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { HashPassword } from '../utils/hash-password';
 import { JwtModule } from '@nestjs/jwt';
-import { EmailServiceModule } from '../email-service/email-service.module';
-import { ExtractToken } from '../utils/extract-token';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { User } from '@uimssn/base_module/user/entities/user.entity';
+import { EmailServiceModule } from '@uimssn/base_module/email-service/email-service.module';
+import { UserController } from '@uimssn/base_module/user/user.controller';
+import { UserService } from '@uimssn/base_module/user/user.service';
+import { HashPassword } from '@uimssn/base_module/utils/hash-password';
+import { ExtractToken } from '@uimssn/base_module/utils/extract-token';
 
 @Module({
   imports: [

@@ -6,17 +6,17 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { User } from './entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { HashPassword } from '../utils/hash-password';
 import { JwtService } from '@nestjs/jwt';
-import { EmailServiceService } from '../email-service/email-service.service';
 import { ConfigService } from '@nestjs/config';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { AccountStatusEnum } from './enums/account-status.enum';
 import * as speakeasy from 'speakeasy'
 import * as QRCode from 'qrcode';
+import { HashPassword } from '@uimssn/base_module/utils/hash-password';
+import { EmailServiceService } from '@uimssn/base_module/email-service/email-service.service';
+import { CreateUserDto } from '@uimssn/base_module/user/dto/create-user.dto';
+import { UpdateUserDto } from '@uimssn/base_module/user/dto/update-user.dto';
+import { AccountStatusEnum } from '@uimssn/base_module/user/enums/account-status.enum';
 
 
 // import { ensureEntityExists } from '../utils/entity-exists';

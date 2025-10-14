@@ -12,14 +12,14 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { BookCatalogueService } from '../services/book-catalogue.service';
-import { CreateBookCatalogueDto } from '../dto/create-book-catalogue.dto';
-import { UpdateBookCatalogueDto } from '../dto/update-book-catalogue.dto';
 import { Request, Response } from 'express';
-import { BookCatalogue } from '../entities/book-catalogue.entity';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@uimssn/base_module/auth/guard/auth.guard';
 import { PaginationQueryDto } from '@uimssn/base_module/utils/dto/pagination-query.dto';
+import { BookCatalogueService } from '@uimssn/modules/book-catalogue/services/book-catalogue.service';
+import { CreateBookCatalogueDto } from '@uimssn/modules/book-catalogue/dto/create-book-catalogue.dto';
+import { BookCatalogue } from '@uimssn/modules/book-catalogue/entities/book-catalogue.entity';
+import { UpdateBookCatalogueDto } from '@uimssn/modules/book-catalogue/dto/update-book-catalogue.dto';
 
 @Controller('book-catalogue')
 export class BookCatalogueController {

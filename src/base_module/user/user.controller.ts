@@ -3,23 +3,17 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   Res,
   BadRequestException,
   HttpStatus, UseGuards, Req, UseInterceptors,
 } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { ValidationPipe } from '../utils/validation.pipe';
 import { ApiBearerAuth, ApiExcludeController, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { Request, Response } from 'express';
-import { Roles } from '../auth/decorator/role.decorator';
-import { RoleGuard } from '../auth/guard/role.guard';
-import { UserRole } from './entities/user.entity';
+import { UserService } from '@uimssn/base_module/user/user.service';
+import { ValidationPipe } from '@uimssn/base_module/utils/validation.pipe';
+import { CreateUserDto } from '@uimssn/base_module/user/dto/create-user.dto';
 
 @ApiTags("User")
 @Controller('user')

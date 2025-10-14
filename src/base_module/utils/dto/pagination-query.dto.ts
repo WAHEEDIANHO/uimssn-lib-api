@@ -1,7 +1,7 @@
 import { IsEnum, IsNumber, IsNumberString, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IEntity } from '../abstract/database/i-enity';
+import { IEntity } from '@uimssn/base_module/utils/abstract/database/i-enity';
 
 export enum SortOrder {
   ASC = 'ASC',

@@ -1,4 +1,3 @@
-import { IEntity } from './i-enity';
 import {
   Entity,
   Column,
@@ -7,6 +6,7 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
 } from 'typeorm';
+import { IEntity } from '@uimssn/base_module/utils/abstract/database/i-enity';
 // import { AggregateRoot } from '@nestjs/cqrs';
 
 @Entity()

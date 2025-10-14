@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { ExtractToken } from '../../utils/extract-token';
+import { ExtractToken } from '@uimssn/base_module/utils/extract-token';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

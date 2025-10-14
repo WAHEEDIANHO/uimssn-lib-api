@@ -1,8 +1,5 @@
-
-
-// Add this custom validator function
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
-import { BookCatalogueCategoriesEnum } from '../../enums/book-catalogue-categories..enum';
+import { BookCatalogueCategoriesEnum } from '@uimssn/modules/book-catalogue/enums/book-catalogue-categories..enum';
 
 export function ValidateProjectCategory(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {

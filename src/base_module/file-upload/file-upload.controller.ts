@@ -1,11 +1,7 @@
-import { FileUploadService } from './file-upload.service';
-import { CreateFileUploadDto } from './dto/create-file-upload.dto';
-import { UpdateFileUploadDto } from './dto/update-file-upload.dto';
 import {
   Bind,
   Controller,
   HttpStatus,
-  NestInterceptor,
   Post,
   Res,
   UploadedFile,

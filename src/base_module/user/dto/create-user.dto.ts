@@ -1,21 +1,17 @@
 import {
   ApiProperty,
   ApiPropertyOptional,
-  ApiTags,
-  PartialType,
 } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsEmail,
-  IsEnum,
-  IsNotEmpty,
   IsOptional,
   IsString,
   Length,
   Matches,
 } from 'class-validator';
-import { UserGender, UserRole } from '../entities/user.entity';
 import { Transform } from 'class-transformer';
+import { UserRole } from '@uimssn/base_module/user/entities/user.entity';
 
 export class CreateUserDto  {
   

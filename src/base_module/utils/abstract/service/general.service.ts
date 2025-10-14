@@ -1,8 +1,8 @@
-import { IGeneralService } from './i-general.service';
-import { IEntity } from '../database/i-enity';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { PaginatedResultDto } from '../../dto/paginated-result.dto';
-import { PaginationQueryDto } from '../../dto/pagination-query.dto';
+import { IEntity } from '@uimssn/base_module/utils/abstract/database/i-enity';
+import { IGeneralService } from '@uimssn/base_module/utils/abstract/service/i-general.service';
+import { PaginationQueryDto } from '@uimssn/base_module/utils/dto/pagination-query.dto';
+import { PaginatedResultDto } from '@uimssn/base_module/utils/dto/paginated-result.dto';
 
 export class GeneralService<T extends IEntity> implements IGeneralService<T>{
   constructor(

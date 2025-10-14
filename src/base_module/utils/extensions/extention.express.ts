@@ -1,4 +1,5 @@
-import { ResponseFormat } from '../response-formatter.middleware';
+import { ResponseFormat } from '@uimssn/base_module/utils/response-formatter.middleware';
+
 interface User {
 
 }

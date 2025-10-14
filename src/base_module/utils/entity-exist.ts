@@ -1,7 +1,7 @@
 
 import { NotFoundException } from '@nestjs/common';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { IEntity } from './abstract/database/i-enity';
+import { IEntity } from '@uimssn/base_module/utils/abstract/database/i-enity';
 
 export async function ensureEntityExists<T extends IEntity>(
   repository: Repository<T>,

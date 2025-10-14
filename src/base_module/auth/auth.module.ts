@@ -1,20 +1,19 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { UserService } from '../user/user.service';
 import { JwtModule } from '@nestjs/jwt';
-import { HashPassword } from '../utils/hash-password';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../user/entities/user.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CacheModule } from '@nestjs/cache-manager';
 import { PassportModule } from '@nestjs/passport';
-import { GoogleStrategy } from '../utils/google.strategy';
-import { EmailServiceModule } from '../email-service/email-service.module';
-import { EmailServiceService } from '../email-service/email-service.service';
-import { ExtractToken } from '../utils/extract-token';
-import { UserModule } from '../user/user.module';
-import { Otp } from './entities/otp.entity';
+import { EmailServiceModule } from '@uimssn/base_module/email-service/email-service.module';
+import { UserModule } from '@uimssn/base_module/user/user.module';
+import { User } from '@uimssn/base_module/user/entities/user.entity';
+import { Otp } from '@uimssn/base_module/auth/entities/otp.entity';
+import { AuthController } from '@uimssn/base_module/auth/auth.controller';
+import { AuthService } from '@uimssn/base_module/auth/auth.service';
+import { UserService } from '@uimssn/base_module/user/user.service';
+import { HashPassword } from '@uimssn/base_module/utils/hash-password';
+import { GoogleStrategy } from '@uimssn/base_module/utils/google.strategy';
+import { EmailServiceService } from '@uimssn/base_module/email-service/email-service.service';
+import { ExtractToken } from '@uimssn/base_module/utils/extract-token';
 
 @Module({
   imports: [

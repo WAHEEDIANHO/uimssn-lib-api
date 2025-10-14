@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { BookCatalogueService } from './services/book-catalogue.service';
-import { BookCatalogueController } from './controllers/book-catalogue.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BookCatalogue } from './entities/book-catalogue.entity';
 import { UtilsModule } from '@uimssn/base_module/utils/utils.module';
+import { BookCatalogue } from '@uimssn/modules/book-catalogue/entities/book-catalogue.entity';
+import { BookCatalogueController } from '@uimssn/modules/book-catalogue/controllers/book-catalogue.controller';
+import { BookCatalogueService } from '@uimssn/modules/book-catalogue/services/book-catalogue.service';
 
 @Module({
   imports: [

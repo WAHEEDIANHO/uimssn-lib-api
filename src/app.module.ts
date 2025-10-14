@@ -6,13 +6,14 @@ import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { typeOrmModuleFactory } from '@uimssn/base_module/config/typeorm.config';
 import { JwtModule } from '@nestjs/jwt';
-import { BookCatalogueModule } from './modules/book-catalogue/book-catalogue.module';
-import { AuthModule } from './base_module/auth/auth.module';
-import { UtilsModule } from './base_module/utils/utils.module';
-import { LogsModule } from './base_module/logs/logs.module';
-import { UserModule } from './base_module/user/user.module';
-import { EmailServiceModule } from './base_module/email-service/email-service.module';
-import { FileUploadModule } from './base_module/file-upload/file-upload.module';
+import { AuthModule } from '@uimssn/base_module/auth/auth.module';
+import { UtilsModule } from '@uimssn/base_module/utils/utils.module';
+import { LogsModule } from '@uimssn/base_module/logs/logs.module';
+import { UserModule } from '@uimssn/base_module/user/user.module';
+import { EmailServiceModule } from '@uimssn/base_module/email-service/email-service.module';
+import { FileUploadModule } from '@uimssn/base_module/file-upload/file-upload.module';
+import { BookCatalogueModule } from '@uimssn/modules/book-catalogue/book-catalogue.module';
+
 
 @Module({
   imports: [

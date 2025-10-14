@@ -4,15 +4,15 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../user/user.service';
-import { HashPassword } from '../utils/hash-password';
-import { LoginDto } from './dto/login.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Otp } from './entities/otp.entity';
 import { Repository } from 'typeorm';
-import { EmailServiceService } from '../email-service/email-service.service';
-import { AccountStatusEnum } from '../user/enums/account-status.enum';
 import { ConfigService } from '@nestjs/config';
+import { UserService } from '@uimssn/base_module/user/user.service';
+import { HashPassword } from '@uimssn/base_module/utils/hash-password';
+import { Otp } from '@uimssn/base_module/auth/entities/otp.entity';
+import { EmailServiceService } from '@uimssn/base_module/email-service/email-service.service';
+import { LoginDto } from '@uimssn/base_module/auth/dto/login.dto';
+import { AccountStatusEnum } from '@uimssn/base_module/user/enums/account-status.enum';
 
 @Injectable()
 export class AuthService {

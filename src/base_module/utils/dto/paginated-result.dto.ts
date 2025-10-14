@@ -1,4 +1,4 @@
-import { IEntity } from '../abstract/database/i-enity';
+import { IEntity } from '@uimssn/base_module/utils/abstract/database/i-enity';
 
 export class PaginatedResultDto<T extends IEntity> {
   data: T[];

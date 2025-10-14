@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
@@ -7,19 +6,19 @@ import {
   Post,
   Req,
   Res,
-  UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
+
 import {ApiExcludeController, ApiExcludeEndpoint, ApiProperty, ApiTags} from '@nestjs/swagger';
-import { ValidationPipe } from '../utils/validation.pipe';
 import { Request, Response } from 'express';
-import { UserService } from '../user/user.service';
-import { UserRole } from '../user/entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { IGoogleUser } from './types/i-google.user';
-import { ForgetPasswordDto } from './dto/forgot-password.dto';
-import { VerifyForgetPasswordDto } from './dto/verify-forget-password.dto';
+import { AuthService } from '@uimssn/base_module/auth/auth.service';
+import { UserService } from '@uimssn/base_module/user/user.service';
+import { ValidationPipe } from '@uimssn/base_module/utils/validation.pipe';
+import { LoginDto } from '@uimssn/base_module/auth/dto/login.dto';
+import { IGoogleUser } from '@uimssn/base_module/auth/types/i-google.user';
+import { UserRole } from '@uimssn/base_module/user/entities/user.entity';
+import { ForgetPasswordDto } from '@uimssn/base_module/auth/dto/forgot-password.dto';
+import { VerifyForgetPasswordDto } from '@uimssn/base_module/auth/dto/verify-forget-password.dto';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -27,9 +26,6 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
-    // private readonly hashPassword: HashPassword,
-    // private readonly emailService: EmailServiceService,
-    // private readonly jwtService: JwtService
   ) {}
 
   @Post('login')
