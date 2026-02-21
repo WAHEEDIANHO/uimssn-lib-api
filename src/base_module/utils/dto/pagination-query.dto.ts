@@ -14,6 +14,13 @@ export class PaginationQueryDto<T extends IEntity> {
   @Type(() => Number)
   limit?: number = 10;
 
+  // When provided, enables page-number pagination (1-based). If omitted, cursor pagination is used.
+  @ApiProperty({ required: false, description: '1-based page index; when provided, uses page-number pagination' })
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  page?: number;
+
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()

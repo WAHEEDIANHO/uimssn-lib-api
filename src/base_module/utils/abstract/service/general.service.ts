@@ -33,24 +33,34 @@ export class GeneralService<T extends IEntity> implements IGeneralService<T>{
   ): Promise<PaginatedResultDto<T>> {
     const {
       limit = 10,
+      page,
       cursor,
       cursorField = 'id',
       order = 'DESC',
     } = paginationReqDto;
 
-    ['cursor', 'limit', 'order', 'cursorField'].forEach((key) => delete paginationReqDto[key]);
+    ['cursor', 'limit', 'order', 'cursorField', 'page'].forEach((key) => delete (paginationReqDto as any)[key]);
+
+    const isPageMode = typeof page === 'number' && page >= 1;
 
     const field = String(cursorField);
 
     const query = this.repository.createQueryBuilder('entity')
-      .orderBy(`entity.${field}`, order)
-      .take(+limit + 1);
+      .orderBy(`entity.${field}`, order);
+
+    // Apply pagination strategy
+    if (isPageMode) {
+      const offset = (page - 1) * +limit;
+      query.skip(offset).take(+limit);
+    } else {
+      query.take(+limit + 1);
+    }
 
     relations.forEach((relation) => {
       query.leftJoinAndSelect(`entity.${relation}`, relation);
     });
 
-    if (cursor) {
+    if (!isPageMode && cursor) {
       query.andWhere(`entity.${field} = :cursor`, { cursor });
     }
 
@@ -100,7 +110,7 @@ export class GeneralService<T extends IEntity> implements IGeneralService<T>{
     const searchFieldsRaw = (paginationReqDto as any).searchFields?.toString();
 
     if (qTerm) {
-      const searchFields = (searchFieldsRaw ? searchFieldsRaw.split(',') : ['title', 'author', 'description'])
+      const searchFields = (searchFieldsRaw ? searchFieldsRaw.split(',') : ['title', 'author', 'description', 'slug'])
         .map((f: string) => f.trim())
         .filter(Boolean);
 
@@ -221,6 +231,27 @@ export class GeneralService<T extends IEntity> implements IGeneralService<T>{
         }
       }
     });
+
+    // Execute and build result based on pagination mode
+    if (isPageMode) {
+      const [data, total] = await query.getManyAndCount();
+      const pageCount = Math.ceil(total / +limit) || 0;
+      const safePage = page ?? 1;
+      const hasPreviousPage = safePage > 1 && total > 0;
+      const hasNextPage = safePage < pageCount;
+
+      return {
+        data,
+        hasNextPage,
+        hasPreviousPage,
+        nextCursor: null,
+        previousCursor: null,
+        total,
+        page: safePage,
+        pageCount,
+        limit: +limit,
+      } as PaginatedResultDto<T>;
+    }
 
     const result = await query.getMany();
 
