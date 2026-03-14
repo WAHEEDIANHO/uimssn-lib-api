@@ -52,9 +52,6 @@ export class User extends DbEntity implements IEntity {
   @Column({ nullable: true })
   phoneNumber: string;
 
-  @Column({ default: false })
-  isPhoneNumberVerified: boolean;
-
   @Column({ nullable: false })
   fullName: string;
 
@@ -88,23 +85,8 @@ export class User extends DbEntity implements IEntity {
   @Column({ default: false })
   isAdmin: boolean;
 
-  @Column({ type: String, nullable: true })
-  mfa_secret: string;
-
-  @Column({ type: Boolean, default: false })
-  is_mfa_enabled: boolean;
-
-  @Column({ type: Boolean, default: false })
-  is_mfa_started: boolean;
-
-  @Column({ type: String, nullable: true })
-  recovery_code?: string;
-
   toJSON() {
     delete this.password;
-    // delete this.createdAt;
-    // delete this.updatedAt;
-    // this.name = `${this.firstName[0].toUpperCase() + this.firstName.slice(1)} ${(this.lastName)[0].toUpperCase()}.`;
     return this;
   }
 }

@@ -1,4 +1,4 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Index } from 'typeorm';
 import { DbEntity } from '@uimssn/base_module/utils/abstract/database/db-entity';
 import { IEntity } from '@uimssn/base_module/utils/abstract/database/i-enity';
 import { BookCatalogueCategoriesEnum } from '@uimssn/modules/book-catalogue/enums/book-catalogue-categories..enum';
@@ -8,16 +8,20 @@ import { FacultyEnum } from '@uimssn/modules/book-catalogue/enums/faculty.enum';
 
 @Entity('tbl_book_catalogues')
 export class BookCatalogue extends DbEntity implements IEntity {
+
+  @Index()
   @Column({ type: 'varchar', length: 255, nullable: false })
   title: string;
 
+  @Index()
   @Column({ type: 'varchar', length: 255, nullable: false })
   author: string;
 
+  @Index()
   @Column({ type: 'enum', enum: BookCatalogueCategoriesEnum, array: true, nullable: false })
   categories: BookCatalogueCategoriesEnum[];
 
-  @Column({ type: 'jsonb', default:'[]', nullable: false })
+  @Column({ type: 'enum', enum: BookCatalogueTypeEnum, nullable: false })
   type: BookCatalogueTypeEnum;
 
   @Column({ type: 'text', nullable: false })
@@ -33,10 +37,10 @@ export class BookCatalogue extends DbEntity implements IEntity {
   fileFormat: BookCatalogueFileFormatEnum;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  projectLink: string;
+  projectLink?: string;
 
   @Column({ type: 'enum', enum: FacultyEnum, nullable: true })
-  faculty: FacultyEnum;
+  faculty?: FacultyEnum;
 
   @Column({ type: 'boolean', nullable: true, default: true })
   isAvailable: boolean;
