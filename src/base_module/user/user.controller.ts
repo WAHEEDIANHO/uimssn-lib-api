@@ -7,6 +7,10 @@ import {
   Res,
   BadRequestException,
   HttpStatus, UseGuards, Req, UseInterceptors,
+  Patch,
+  Delete,
+  Put,
+  ConflictException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiExcludeController, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/guard/auth.guard';
@@ -14,19 +18,43 @@ import { Request, Response } from 'express';
 import { UserService } from '@uimssn/base_module/user/user.service';
 import { ValidationPipe } from '@uimssn/base_module/utils/validation.pipe';
 import { CreateUserDto } from '@uimssn/base_module/user/dto/create-user.dto';
+import { UpdateUserDto } from '@uimssn/base_module/user/dto/update-user.dto';
+import { Roles } from '../auth/decorator/role.decorator';
+import { RoleEnum } from './enums/role.enum';
+import { get } from 'http';
 
 @ApiTags("User")
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
-  async create( @Body(new ValidationPipe()) createUserDto: CreateUserDto, @Res() res: Response ): Promise<Response> {
+  async create(@Body(new ValidationPipe()) createUserDto: CreateUserDto, @Res() res: Response): Promise<Response> {
+    createUserDto.role = RoleEnum.USER;
     const user = await this.userService.createUser(createUserDto);
-    if(user == null) throw new BadRequestException("unable to create user")
+    if (user == null) throw new BadRequestException("unable to create user")
     else return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, "User created successfully", user));
   }
 
+  @ApiBearerAuth()
+  @Roles(RoleEnum.SUPER_ADMIN)
+  @UseGuards(AuthGuard)
+  @Get()
+  async findAll(@Res() res: Response): Promise<Response> {
+    const users = await this.userService.findAll();
+    return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, "Users fetched successfully", users));
+  }
+
+  @ApiBearerAuth()
+  @Roles(RoleEnum.SUPER_ADMIN)
+  @UseGuards(AuthGuard)
+  @Post('admin')
+  async createAdmin(@Body(new ValidationPipe()) createUserDto: CreateUserDto, @Res() res: Response): Promise<Response> {
+    createUserDto.role = RoleEnum.ADMIN;
+    const user = await this.userService.createUser(createUserDto);
+    if (user == null) throw new BadRequestException("unable to create user")
+    else return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, "User created successfully", user));
+  }
   @Get("resend-verification-email/{email}")
   async resendVerificationEmail(@Param('email') email: string, @Res() res: Response): Promise<Response> {
     const user = await this.userService.findByUsername(email);
@@ -42,11 +70,13 @@ export class UserController {
   }
 
 
-  @UseGuards(AuthGuard)
+
   @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get("me")
-  async findAll(@Req() req: Request, @Res() res: Response): Promise<Response> {
+  async me(@Req() req: Request, @Res() res: Response): Promise<Response> {
     let { user }: any = req;
+    console.log(user)
     if (!user) {
       return res.status(HttpStatus.UNAUTHORIZED).json(res.formatResponse(HttpStatus.UNAUTHORIZED, "Unauthorized", {}));
     }
@@ -54,8 +84,8 @@ export class UserController {
     return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, "Users fetched successfully", user));
   }
 
-  @UseGuards(AuthGuard)
   @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Res() res: Response): Promise<Response> {
     const user = await this.userService.findById(id);
@@ -65,13 +95,24 @@ export class UserController {
     return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, "User found successfully", user));
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.userService.update(+id, updateUserDto);
-  // }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.userService.remove(+id);
-  // }
+  @ApiBearerAuth()
+  @Roles(RoleEnum.SUPER_ADMIN)
+  @UseGuards(AuthGuard)
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(id, updateUserDto);
+  }
+
+  @ApiBearerAuth()
+  @Roles(RoleEnum.SUPER_ADMIN)
+  @UseGuards(AuthGuard)
+  @Delete(':id')
+  remove(@Param('id') id: string, @Req() req: Request) {
+    const { user }: any = req;
+    if (user?.sub == id) {
+      throw new ConflictException('Invalid request')
+    }
+    return this.userService.remove(id);
+  }
 }

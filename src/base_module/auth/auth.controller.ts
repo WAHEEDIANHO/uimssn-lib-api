@@ -8,7 +8,7 @@ import {
   Res,
 } from '@nestjs/common';
 
-import {ApiExcludeController, ApiExcludeEndpoint, ApiProperty, ApiTags} from '@nestjs/swagger';
+import { ApiExcludeController, ApiExcludeEndpoint, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '@uimssn/base_module/auth/auth.service';
@@ -19,6 +19,7 @@ import { IGoogleUser } from '@uimssn/base_module/auth/types/i-google.user';
 import { UserRole } from '@uimssn/base_module/user/entities/user.entity';
 import { ForgetPasswordDto } from '@uimssn/base_module/auth/dto/forgot-password.dto';
 import { VerifyForgetPasswordDto } from '@uimssn/base_module/auth/dto/verify-forget-password.dto';
+import { RoleEnum } from '../user/enums/role.enum';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -26,10 +27,10 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   @Post('login')
-  async login( @Body(new ValidationPipe()) loginDto: LoginDto, @Res() res: Response ): Promise<Response> {
+  async login(@Body(new ValidationPipe()) loginDto: LoginDto, @Res() res: Response): Promise<Response> {
     const { access_token, refresh_token, user } = await this.authService.login(loginDto);
     delete user?.password;
     delete user?.createdAt;
@@ -63,13 +64,13 @@ export class AuthController {
     @Body('refreshToken') refreshToken: string,
     @Res() res: Response,
   ): Promise<Response> {
-      const response = await this.authService.refreshToken(refreshToken);
-      return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, 'new refreshToken', response));
+    const response = await this.authService.refreshToken(refreshToken);
+    return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, 'new refreshToken', response));
   }
 
   @Get('google')
   // @UseGuards(AuthGuard('google'))
-  async signWithGoogle(@Res() res: Response) {}
+  async signWithGoogle(@Res() res: Response) { }
 
   @ApiExcludeEndpoint()
   @Get('google/callback')
@@ -107,7 +108,7 @@ export class AuthController {
       const newUser = await this.userService.createUser({
         email: googleUser.email,
         password: googleUser.id, // Using Google ID as password for registration
-        role: UserRole.USER, // Default role
+        role: RoleEnum.USER, // Default role
         firstName: googleUser.firstName,
         lastName: googleUser.lastName,
         fullName: `${googleUser.firstName} ${googleUser.lastName}`,
@@ -138,13 +139,13 @@ export class AuthController {
   }
 
   @Post("forgot-password")
-  async forgotPassword(@Body(new ValidationPipe())  forgetPasswordDto: ForgetPasswordDto, @Res() res: Response): Promise<Response> {
+  async forgotPassword(@Body(new ValidationPipe()) forgetPasswordDto: ForgetPasswordDto, @Res() res: Response): Promise<Response> {
 
     const user = await this.userService.findByUsername(forgetPasswordDto.email);
     if (!user) {
       return res.status(HttpStatus.NOT_FOUND).json(res.formatResponse(HttpStatus.NOT_FOUND, 'User not found', {}));
     }
-    if( !user.isEmailVerified) {
+    if (!user.isEmailVerified) {
       return res.status(HttpStatus.BAD_REQUEST).json(res.formatResponse(HttpStatus.BAD_REQUEST, 'User is not verified', {}));
     }
     // Logic to send reset password email
@@ -156,17 +157,17 @@ export class AuthController {
   @Post("verify-forgot-password")
   async verifyForgotPassword(@Body(new ValidationPipe()) verifyDto: VerifyForgetPasswordDto, @Body('newPassword') newPassword: string, @Res() res: Response): Promise<Response> {
     const { password, confirmPassword, email, otp } = verifyDto;
-    if ( password !== confirmPassword) {
+    if (password !== confirmPassword) {
       return res.status(HttpStatus.BAD_REQUEST).json(res.formatResponse(HttpStatus.BAD_REQUEST, 'Passwords do not match', {}));
     }
 
-    const user = await  this.userService.findByUsername(email);
+    const user = await this.userService.findByUsername(email);
     if (!user) {
       return res.status(HttpStatus.NOT_FOUND).json(res.formatResponse(HttpStatus.NOT_FOUND, 'User not found', {}));
     }
 
     // Logic to verify the token and reset the password
-    if(!await this.authService.verifyOtp(email, otp)) {
+    if (!await this.authService.verifyOtp(email, otp)) {
       return res.status(HttpStatus.BAD_REQUEST).json(res.formatResponse(HttpStatus.BAD_REQUEST, 'Invalid OTP', {}));
     }
     await this.userService.changePassword(user, password);

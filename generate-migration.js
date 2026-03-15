@@ -9,7 +9,7 @@ if (!migrationName) {
 
 const migrationDir = "src/database/migrations";
 
-const cmd = `yarn build && ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate ${migrationDir}/${migrationName} -d src/built-in/config/typeorm.config.ts`;
+const cmd = `yarn build && ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate ${migrationDir}/${migrationName} -d src/base_module/config/typeorm.config.ts`;
 
 console.log(`🚀 Generating migration: ${migrationName}`);
 execSync(cmd, { stdio: "inherit" });

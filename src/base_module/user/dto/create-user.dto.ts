@@ -11,10 +11,10 @@ import {
   Matches,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { UserRole } from '@uimssn/base_module/user/entities/user.entity';
+import { RoleEnum } from '../enums/role.enum';
 
-export class CreateUserDto  {
-  
+export class CreateUserDto {
+
   @ApiProperty()
   @IsEmail()
   email: string
@@ -28,20 +28,20 @@ export class CreateUserDto  {
   @Transform(({ value }) => value?.trim())
   fullName: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ required: false })
   @IsOptional()
   @IsString()
   @Transform(({ value }) => value?.trim())
   firstName?: string;
 
-  @ApiPropertyOptional({ required: false  })
+  @ApiPropertyOptional({ required: false })
   @IsOptional()
   @IsString()
   @Transform(({ value }) => value?.trim())
   @Length(1, 20)
   lastName?: string;
 
-  @ApiProperty({required: false})
+  @ApiProperty({ required: false })
   // @IsString()
   middleName?: string;
 
@@ -54,44 +54,44 @@ export class CreateUserDto  {
   @IsOptional()
   profilePicture?: string
 
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  phoneNumber?: string;
+  // @ApiProperty({ required: false })
+  // @IsOptional()
+  // @IsString()
+  // phoneNumber?: string;
 
 
-  @ApiProperty({ required: false })
-  @IsString()
-  @IsOptional()
-  zipCode?: string
+  // @ApiProperty({ required: false })
+  // @IsString()
+  // @IsOptional()
+  // zipCode?: string
 
-  @ApiProperty({ required: false })
-  @IsString()
-  @IsOptional()
-  state?: string
+  // @ApiProperty({ required: false })
+  // @IsString()
+  // @IsOptional()
+  // state?: string
 
-  @ApiProperty({ required: false })
-  @IsString()
-  @IsOptional()
-  country?: string
+  // @ApiProperty({ required: false })
+  // @IsString()
+  // @IsOptional()
+  // country?: string
 
-  @IsOptional()
-  @IsString()
-  mfa_secret?: string;
+  // @IsOptional()
+  // @IsString()
+  // mfa_secret?: string;
 
-  @IsOptional()
-  @IsString()
-  recovery_code?: string;
+  // @IsOptional()
+  // @IsString()
+  // recovery_code?: string;
 
-  @IsOptional()
-  @IsBoolean()
-  is_mfa_started?: boolean;
+  // @IsOptional()
+  // @IsBoolean()
+  // is_mfa_started?: boolean;
 
-  @IsOptional()
-  @IsBoolean()
-  is_mfa_enabled?: boolean;
+  // @IsOptional()
+  // @IsBoolean()
+  // is_mfa_enabled?: boolean;
 
   // @ApiProperty()
-  role: UserRole;
+  role: RoleEnum;
 
 }

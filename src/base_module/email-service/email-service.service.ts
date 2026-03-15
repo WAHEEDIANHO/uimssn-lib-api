@@ -56,7 +56,7 @@ export class EmailServiceService {
       });
     } catch (error) {
       console.error('Error sending verification email:', error);
-      throw error;
+      // throw error;
     }
   }
 

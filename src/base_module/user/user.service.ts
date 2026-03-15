@@ -17,6 +17,7 @@ import { EmailServiceService } from '@uimssn/base_module/email-service/email-ser
 import { CreateUserDto } from '@uimssn/base_module/user/dto/create-user.dto';
 import { UpdateUserDto } from '@uimssn/base_module/user/dto/update-user.dto';
 import { AccountStatusEnum } from '@uimssn/base_module/user/enums/account-status.enum';
+import { RoleEnum } from './enums/role.enum';
 
 
 // import { ensureEntityExists } from '../utils/entity-exists';
@@ -31,7 +32,7 @@ export class UserService {
     private jwtService: JwtService,
     private emailService: EmailServiceService,
     private configService: ConfigService,
-  ) {}
+  ) { }
 
   async findByUsername(email: string): Promise<User> {
     // return this.userModel.findOne();
@@ -57,7 +58,7 @@ export class UserService {
       const newUser = this.userModel.create({
         username: createUserDto.email,
         ...createUserDto,
-
+        userType: createUserDto.role ?? RoleEnum.USER,
         // role: googleId ? UserRole.Student : UserRole.USER, // Default role
         googleId: googleId,
         isVerified,
@@ -91,7 +92,7 @@ export class UserService {
       { id: user.id, email: user.email },
       { expiresIn: this.configService.get('JWT_EXPIRES_IN'), secret: this.configService.get('JWT_SECRET_KEY') },
     );
-    await this.emailService.sendVerificationMail({
+    this.emailService.sendVerificationMail({
       verificationUrl:
         `${this.configService.get('BACKEND_BASE_URL')}/auth/verify-email/` +
         token,
@@ -141,250 +142,15 @@ export class UserService {
     return await this.userModel.save(user);
   }
 
-  async enableMfa(userId: string) {
-    const user = await this.findById(userId);
-
-    const secret = speakeasy.generateSecret({
-      length: 20,
-      name: `teracare (${user.email})`,
-    });
-
-    const qrCode = await QRCode.toDataURL(secret.otpauth_url as string);
-
-    await this.update(userId, {
-      mfa_secret: secret.base32,
-      is_mfa_started: true,
-    });
-
-    return { QRCode: qrCode };
-  }
-
-  async disableMfa(userId: string, code: string) {
-    const user = await this.findById(userId);
-    if (!this.verifyMfaCode(user.mfa_secret, code)) {
-      throw new BadRequestException('Invalid MFA code');
-    }
-
-    await this.update(userId, {
-      mfa_secret: undefined,
-      is_mfa_enabled: false,
-      recovery_code: undefined,
-    });
-
-    return { message: 'MFA disabled' };
-  }
-
-  async toggleMfa(userId: string, action: 'enable' | 'disable') {
-    const user = await this.findById(userId);
-
-    if (action === 'disable') {
-      await this.update(userId, {
-        mfa_secret: undefined,
-        is_mfa_enabled: false,
-        recovery_code: undefined,
-      });
-      return { message: 'MFA disabled' };
-    } else {
-      const secret = speakeasy.generateSecret({
-        length: 20,
-        name: `teracare (${user.email})`,
-      });
-
-      const qrCode = await QRCode.toDataURL(secret.otpauth_url as string);
-
-      await this.update(userId, {
-        mfa_secret: secret.base32,
-        is_mfa_started: true,
-      });
-
-      return { QRCode: qrCode, secret: secret.base32 };
-    }
+  async remove(id: string) {
+    const user = await this.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+    return await this.userModel.remove(user);
   }
 
 
-
-  private verifyMfaCode(secret: string, code: string) {
-    return speakeasy.totp.verify({
-      secret,
-      encoding: 'base32',
-      token: code,
-      window: 1,
-    });
+  async findAll(): Promise<User[]> {
+    return await this.userModel.find();
   }
 
-
-  // async requestAccountDeletion(phoneNumber: string) {
-  //   try {
-  //     const standardizedPhone =
-  //       this.internationalStandardizedNigerianPhoneNumber(phoneNumber);
-  //
-  //     this.logger.log(
-  //       `User with phone ${standardizedPhone} requested account deletion`,
-  //     );
-  //     const user = await this.userRepository.findOne({
-  //       where: { phoneNumber: standardizedPhone, isPhoneNumberVerified: true },
-  //       relations: ['role'],
-  //     });
-  //
-  //     if (!user) {
-  //       throw new NotFoundException(
-  //         'No verified account found with this phone number',
-  //       );
-  //     }
-  //
-  //     const verification_token = generateRandomNumber(4);
-  //
-  //     await this.otpService.storeOtp(
-  //       standardizedPhone,
-  //       user.id,
-  //       user.role.roleType,
-  //       verification_token,
-  //       OtpPurpose.ACCOUNT_DELETION,
-  //     );
-  //
-  //     await this.smsService.sendVerificationCode(
-  //       standardizedPhone,
-  //       user.id,
-  //       user.role.roleType,
-  //       OtpPurpose.ACCOUNT_DELETION,
-  //       verification_token,
-  //     );
-  //
-  //     return {
-  //       message:
-  //         'OTP sent to your phone number for account deletion verification',
-  //       phoneNumber: standardizedPhone,
-  //     };
-  //   } catch (error) {
-  //     this.logger.error(error);
-  //     ErrorHandler.handleError('UserService.requestAccountDeletion', error);
-  //   }
-  // }
-  //
-  // async verifyAccountDeletionOtp(phoneNumber: string, code: string) {
-  //   try {
-  //     const standardizedPhone =
-  //       this.internationalStandardizedNigerianPhoneNumber(phoneNumber);
-  //
-  //     const user = await this.userRepository.findOne({
-  //       where: { phoneNumber: standardizedPhone, isPhoneNumberVerified: true },
-  //       relations: ['role'],
-  //     });
-  //
-  //     if (!user) {
-  //       throw new NotFoundException(
-  //         'No verified account found with this phone number',
-  //       );
-  //     }
-  //
-  //     const response = await this.otpService.verifyOtp({
-  //       code,
-  //       userId: user.id,
-  //     });
-  //
-  //     if (response.purpose !== OtpPurpose.ACCOUNT_DELETION) {
-  //       throw new BadRequestException('Invalid OTP purpose');
-  //     }
-  //
-  //     // Generate a verification token for final confirmation
-  //     const verificationToken = uuidv4();
-  //
-  //     // Store the verification token temporarily (you might want to add this to user schema or use cache)
-  //     user.resetToken = verificationToken; // Reusing resetToken field for this purpose
-  //     await this.userRepository.save(user);
-  //
-  //     return {
-  //       message:
-  //         'OTP verified successfully. Use the verification token to confirm account deletion.',
-  //       verificationToken,
-  //       expiresIn: '15 minutes',
-  //     };
-  //   } catch (error) {
-  //     this.logger.error(error);
-  //     ErrorHandler.handleError('UserService.verifyAccountDeletionOtp', error);
-  //   }
-  // }
-  //
-  // async confirmAccountDeletion(phoneNumber: string, verificationToken: string) {
-  //   try {
-  //     const standardizedPhone =
-  //       this.internationalStandardizedNigerianPhoneNumber(phoneNumber);
-  //
-  //     const user = await this.userRepository.findOne({
-  //       where: {
-  //         phoneNumber: standardizedPhone,
-  //         isPhoneNumberVerified: true,
-  //         resetToken: verificationToken,
-  //       },
-  //       relations: ['role'],
-  //     });
-  //
-  //     if (!user) {
-  //       throw new NotFoundException(
-  //         'Invalid verification token or phone number',
-  //       );
-  //     }
-  //
-  //     // // Check if token is still valid (15 minutes)
-  //     // const tokenAge = Date.now() - user.updatedAt.getTime();
-  //     // const fifteenMinutes = 15 * 60 * 1000;
-  //
-  //     // if (tokenAge > fifteenMinutes) {
-  //     //   throw new UnauthorizedException('Verification token has expired');
-  //     // }
-  //
-  //     // Perform account deletion
-  //     await this.softDeleteUserAccount(user.id);
-  //
-  //     return {
-  //       message: 'Account has been successfully deleted',
-  //       deletedAt: new Date(),
-  //     };
-  //   } catch (error) {
-  //     this.logger.error(error);
-  //     ErrorHandler.handleError('UserService.confirmAccountDeletion', error);
-  //   }
-  // }
-  //
-  // private async softDeleteUserAccount(userId: string) {
-  //   await this.userRepository.softDelete(userId);
-  // }
-  //
-  // private async deleteUserAccount(userId: string) {
-  //   const queryRunner = this.dataSource.createQueryRunner();
-  //   await queryRunner.connect();
-  //   await queryRunner.startTransaction();
-  //
-  //   try {
-  //     const user = await queryRunner.manager.findOne(UserEntity, {
-  //       where: { id: userId },
-  //       relations: ['role'],
-  //     });
-  //
-  //     if (!user) {
-  //       throw new BadRequestException('User not found');
-  //     }
-  //
-  //     // Clean up related data
-  //     if (user.role && user.role.createdBy?.id === userId) {
-  //       await queryRunner.manager.update(
-  //         RoleEntity,
-  //         { createdBy: { id: userId } },
-  //         { createdBy: null },
-  //       );
-  //     }
-  //
-  //     // Delete user
-  //     await queryRunner.manager.delete(UserEntity, userId);
-  //
-  //     await queryRunner.commitTransaction();
-  //   } catch (error) {
-  //     await queryRunner.rollbackTransaction();
-  //     throw error;
-  //   } finally {
-  //     await queryRunner.release();
-  //   }
-  // }
-
-
-}
+} 

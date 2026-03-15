@@ -8,7 +8,7 @@ export enum SortOrder {
   DESC = 'DESC',
 }
 
-export class PaginationQueryDto<T extends IEntity> {
+export abstract class PaginationQueryDto<T extends IEntity> {
   @ApiProperty({ required: false })
   @IsNumber()
   @Type(() => Number)
@@ -21,16 +21,27 @@ export class PaginationQueryDto<T extends IEntity> {
   @Type(() => Number)
   page?: number;
 
+
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   cursor?: string;
 
   @ApiProperty({ required: false })
+  @IsOptional()
   @IsEnum(SortOrder)
   order?: SortOrder = SortOrder.DESC;
 
   @ApiProperty({ required: false, type: "string" })
   @IsString()
   cursorField?: keyof T = 'id' as keyof T;  // default pagination field
+
+  @ApiProperty({ required: false, type: "string" })
+  @IsOptional()
+  @IsString()
+  q?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  abstract searchFields?: string;
 }

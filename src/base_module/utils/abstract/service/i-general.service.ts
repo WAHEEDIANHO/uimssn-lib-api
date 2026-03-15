@@ -3,7 +3,7 @@ import { PaginationQueryDto } from '@uimssn/base_module/utils/dto/pagination-que
 import { PaginatedResultDto } from '@uimssn/base_module/utils/dto/paginated-result.dto';
 
 export interface IGeneralService<T extends IEntity> {
-  create(data: T): Promise<boolean>;
+  create(data: T): Promise<T>;
   delete(id: string): Promise<boolean>
   update (data: T): void;
   findAll(
