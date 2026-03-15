@@ -17,6 +17,7 @@ import { EmailServiceService } from '@uimssn/base_module/email-service/email-ser
 import { CreateUserDto } from '@uimssn/base_module/user/dto/create-user.dto';
 import { UpdateUserDto } from '@uimssn/base_module/user/dto/update-user.dto';
 import { AccountStatusEnum } from '@uimssn/base_module/user/enums/account-status.enum';
+import { RoleEnum } from './enums/role.enum';
 
 
 // import { ensureEntityExists } from '../utils/entity-exists';
@@ -57,7 +58,7 @@ export class UserService {
       const newUser = this.userModel.create({
         username: createUserDto.email,
         ...createUserDto,
-
+        userType: createUserDto.role ?? RoleEnum.USER,
         // role: googleId ? UserRole.Student : UserRole.USER, // Default role
         googleId: googleId,
         isVerified,
@@ -91,7 +92,7 @@ export class UserService {
       { id: user.id, email: user.email },
       { expiresIn: this.configService.get('JWT_EXPIRES_IN'), secret: this.configService.get('JWT_SECRET_KEY') },
     );
-    await this.emailService.sendVerificationMail({
+    this.emailService.sendVerificationMail({
       verificationUrl:
         `${this.configService.get('BACKEND_BASE_URL')}/auth/verify-email/` +
         token,

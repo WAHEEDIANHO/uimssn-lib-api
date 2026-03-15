@@ -10,6 +10,7 @@ import {
   Patch,
   Delete,
   Put,
+  ConflictException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiExcludeController, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/guard/auth.guard';
@@ -75,6 +76,7 @@ export class UserController {
   @Get("me")
   async me(@Req() req: Request, @Res() res: Response): Promise<Response> {
     let { user }: any = req;
+    console.log(user)
     if (!user) {
       return res.status(HttpStatus.UNAUTHORIZED).json(res.formatResponse(HttpStatus.UNAUTHORIZED, "Unauthorized", {}));
     }
@@ -106,7 +108,11 @@ export class UserController {
   @Roles(RoleEnum.SUPER_ADMIN)
   @UseGuards(AuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string, @Req() req: Request) {
+    const { user }: any = req;
+    if (user?.sub == id) {
+      throw new ConflictException('Invalid request')
+    }
     return this.userService.remove(id);
   }
 }
