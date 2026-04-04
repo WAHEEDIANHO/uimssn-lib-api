@@ -40,9 +40,9 @@ function buildOptions(get: GetFn): DataSourceOptions {
   const type =
     rawType != null
       ? String(rawType)
-          .trim()
-          .replace(/^(\[?)(["'])(.*)\2(\]?)$/, '$3')
-          .replace(/^(\"|\')|((\"|\')$)/g, '')
+        .trim()
+        .replace(/^(\[?)(["'])(.*)\2(\]?)$/, '$3')
+        .replace(/^(\"|\')|((\"|\')$)/g, '')
       : undefined;
   return {
     type: type as any,
@@ -60,7 +60,7 @@ function buildOptions(get: GetFn): DataSourceOptions {
       pick(get, 'NODE_ENV') !== 'production',
     ),
     synchronize: toBool(pick(get, 'DATABASE_SYNCRONIZE'), false),
-    ssl: { rejectUnauthorized: false },
+    // ssl: { rejectUnauthorized: false },
     maxQueryExecutionTime: toNumber(
       pick(get, 'DB_MAX_QUERY_EXECUTION_TIME'),
       0,
