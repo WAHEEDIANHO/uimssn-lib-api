@@ -18,6 +18,7 @@ import { CreateUserDto } from '@uimssn/base_module/user/dto/create-user.dto';
 import { UpdateUserDto } from '@uimssn/base_module/user/dto/update-user.dto';
 import { AccountStatusEnum } from '@uimssn/base_module/user/enums/account-status.enum';
 import { RoleEnum } from './enums/role.enum';
+import { SendEmailFromTemplate } from '../email-service/SendEmailFromTemplate';
 
 
 // import { ensureEntityExists } from '../utils/entity-exists';
@@ -77,7 +78,18 @@ export class UserService {
       // })
     }
 
-    this.sendVerificationMail(user);
+    SendEmailFromTemplate({
+      template: "add-admin",
+      to: user.email,
+      locals: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        password: createUserDto.password,
+      }
+    })
+    // this.sendVerificationMail(user);
     return user;
   }
 

@@ -13,6 +13,7 @@ import { UserModule } from '@uimssn/base_module/user/user.module';
 import { EmailServiceModule } from '@uimssn/base_module/email-service/email-service.module';
 import { FileUploadModule } from '@uimssn/base_module/file-upload/file-upload.module';
 import { BookCatalogueModule } from '@uimssn/modules/book-catalogue/book-catalogue.module';
+import { BookRequestModule } from './modules/book-request/book-request.module';
 
 
 @Module({
@@ -59,6 +60,7 @@ import { BookCatalogueModule } from '@uimssn/modules/book-catalogue/book-catalog
     EmailServiceModule,
     FileUploadModule,
     BookCatalogueModule,
+    BookRequestModule,
     // ScheduleModule.forRoot()
   ],
   controllers: [],
