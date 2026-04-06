@@ -11,6 +11,8 @@ import { RoleEnum } from '@uimssn/base_module/user/enums/role.enum';
 import { AuthGuard } from '@uimssn/base_module/auth/guard/auth.guard';
 import { BookRequestQueryDto } from './dto/book-request-query.dto';
 import { ensureEntityExists } from '@uimssn/base_module/utils/entity-exist';
+import { SendEmailFromTemplate } from '@uimssn/base_module/email-service/SendEmailFromTemplate';
+import { BookCatalogueTypeEnum } from '../book-catalogue/enums/book-catalogue-type.enum';
 
 @ApiTags('Book Request')
 @Controller('book-request')
@@ -21,11 +23,33 @@ export class BookRequestController {
 
   @Post()
   async create(@Body() createBookRequestDto: CreateBookRequestDto, @Res() res: Response): Promise<Response> {
-    await this.bookRequestService.isBookExist(createBookRequestDto.bookId);
+    const bookCatalogue = await this.bookRequestService.isBookExist(createBookRequestDto.bookId);
+    if (!bookCatalogue.isAvailable) {
+      return res.status(HttpStatus.BAD_REQUEST).json(res.formatResponse(HttpStatus.BAD_REQUEST, "Book is not available", {}));
+    }
+
+    if (bookCatalogue.type === BookCatalogueTypeEnum.DIGITAL) {
+      return res.status(HttpStatus.BAD_REQUEST).json(res.formatResponse(HttpStatus.BAD_REQUEST, "Digital book cannot be requested", {}));
+    }
+
     const bookRequest = new BookRequest();
     Object.assign(bookRequest, createBookRequestDto);
     bookRequest.book = { id: createBookRequestDto.bookId } as BookCatalogue;
-    return res.status(HttpStatus.CREATED).json(res.formatResponse(HttpStatus.CREATED, "Book request created successfully", await this.bookRequestService.create(bookRequest)));
+    const result = await this.bookRequestService.create(bookRequest);
+
+    SendEmailFromTemplate({
+      template: "book-request",
+      to: "waheedianho65@gmail.com",
+      locals: {
+        bookTitle: bookCatalogue.title,
+        bookAuthor: bookCatalogue.author,
+        studentName: result.fullName,
+        studentId: result.matricNo,
+        studentPhone: result.whatsAppNumber,
+      },
+    })
+
+    return res.status(HttpStatus.CREATED).json(res.formatResponse(HttpStatus.CREATED, "Book request created successfully", result));
   }
 
   @ApiBearerAuth()
