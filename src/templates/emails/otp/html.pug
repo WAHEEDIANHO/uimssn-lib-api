@@ -1,0 +1,18 @@
+
+include ../partials/head.pug
+div.container
+  include ../partials/header.pug
+
+  div.content
+    p Hi #{fullName},
+    p
+      | Welcome to Mssn Library! To complete your registration, please
+      | #{action === 'reset_password' ? 'reset your password' : 'verify your email'} using the code below:
+    p.otp-code #{code}
+    p
+      | If you did not request this, please ignore this email or contact support at 
+      strong support@mssnuilib.app
+    p Thanks,
+    p The MSSSUI Library Team
+
+  include ../partials/footer.pug

@@ -12,7 +12,7 @@ import {
   Put,
   ConflictException,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiExcludeController, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExcludeController, ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { Request, Response } from 'express';
 import { UserService } from '@uimssn/base_module/user/user.service';
@@ -28,13 +28,7 @@ import { get } from 'http';
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
-  @Post()
-  async create(@Body(new ValidationPipe()) createUserDto: CreateUserDto, @Res() res: Response): Promise<Response> {
-    createUserDto.role = RoleEnum.USER;
-    const user = await this.userService.createUser(createUserDto);
-    if (user == null) throw new BadRequestException("unable to create user")
-    else return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, "User created successfully", user));
-  }
+
 
   @ApiBearerAuth()
   @Roles(RoleEnum.SUPER_ADMIN)
@@ -48,26 +42,8 @@ export class UserController {
   @ApiBearerAuth()
   @Roles(RoleEnum.SUPER_ADMIN)
   @UseGuards(AuthGuard)
-  @Post('admin')
-  async createAdmin(@Body(new ValidationPipe()) createUserDto: CreateUserDto, @Res() res: Response): Promise<Response> {
-    createUserDto.role = RoleEnum.ADMIN;
-    const user = await this.userService.createUser(createUserDto);
-    if (user == null) throw new BadRequestException("unable to create user")
-    else return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, "User created successfully", user));
-  }
-  @Get("resend-verification-email/{email}")
-  async resendVerificationEmail(@Param('email') email: string, @Res() res: Response): Promise<Response> {
-    const user = await this.userService.findByUsername(email);
-    if (!user) {
-      return res.status(HttpStatus.NOT_FOUND).json(res.formatResponse(HttpStatus.NOT_FOUND, "User not found", {}));
-    }
-    if (user.isEmailVerified) {
-      return res.status(HttpStatus.BAD_REQUEST).json(res.formatResponse(HttpStatus.BAD_REQUEST, "User is already verified", {}));
-    }
 
-    await this.userService.sendVerificationMail(user);
-    return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, "Verification email sent successfully", {}));
-  }
+
 
 
 
