@@ -1,0 +1,38 @@
+include ../partials/head.pug
+
+include ../partials/header.pug
+
+h2 New Student Inquiry
+
+p Hello Admin,
+
+p You have received a new inquiry from a student.
+
+p
+  | Inquiry Details:
+  br
+  | Full Name: #{fullName}
+  br
+  | Matric Number: #{matricNo}
+  br
+  | Email: #{email}
+  br
+  | Phone Number: #{phoneNumber}
+  br
+  | Faculty: #{faculty}
+  br
+  | Department: #{department}
+  br
+  | Reason: #{reason}
+  br
+  | Message: 
+  br
+  | #{message}
+  br
+
+p Please review and respond to this inquiry as soon as possible.
+
+p Best regards,
+p The MSSNUI Library Team
+
+include ../partials/footer.pug

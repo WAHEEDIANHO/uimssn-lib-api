@@ -93,34 +93,11 @@ export class UserService {
     return user;
   }
 
-  async sendVerificationMail(user: User): Promise<void> {
-    if (!user || !user.email) {
-      this.logger.error('User data is required mail not sent');
-      return;
-      // throw new UnprocessableEntityException('User data is required');
-    }
-
-    const token = this.jwtService.sign(
-      { id: user.id, email: user.email },
-      { expiresIn: this.configService.get('JWT_EXPIRES_IN'), secret: this.configService.get('JWT_SECRET_KEY') },
-    );
-    this.emailService.sendVerificationMail({
-      verificationUrl:
-        `${this.configService.get('BACKEND_BASE_URL')}/auth/verify-email/` +
-        token,
-      email: user.email,
-      name: '', //`${user.firstName} ${user.lastName}`,
-    });
-    this.logger.log('mail sent');
-  }
-
-  async verifyUser(token: string): Promise<void> {
-    const { id } = this.jwtService.verify(token, { secret: this.configService.get('JWT_SECRET_KEY') });
+  async verifyUserById(id: string): Promise<void> {
     const user = await this.findById(id);
     user.accountStatus = AccountStatusEnum.ACTIVE;
     user.isEmailVerified = true;
     await this.userModel.save(user);
-    // console.log(val)
   }
 
   async saveUserAsync(user: User): Promise<User> {

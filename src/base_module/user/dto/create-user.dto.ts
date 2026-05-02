@@ -28,22 +28,22 @@ export class CreateUserDto {
   @Transform(({ value }) => value?.trim())
   fullName: string;
 
-  @ApiPropertyOptional({ required: false })
-  @IsOptional()
-  @IsString()
-  @Transform(({ value }) => value?.trim())
-  firstName?: string;
-
-  @ApiPropertyOptional({ required: false })
-  @IsOptional()
-  @IsString()
-  @Transform(({ value }) => value?.trim())
-  @Length(1, 20)
-  lastName?: string;
-
-  @ApiProperty({ required: false })
+  // @ApiPropertyOptional({ required: false })
+  // @IsOptional()
   // @IsString()
-  middleName?: string;
+  // @Transform(({ value }) => value?.trim())
+  // firstName?: string;
+
+  // @ApiPropertyOptional({ required: false })
+  // @IsOptional()
+  // @IsString()
+  // @Transform(({ value }) => value?.trim())
+  // @Length(1, 20)
+  // lastName?: string;
+
+  // @ApiProperty({ required: false })
+  // // @IsString()
+  // middleName?: string;
 
   // @ApiProperty()
   // @IsEnum(["male", "female"], { message: "value must be male or female"})
@@ -53,45 +53,6 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   profilePicture?: string
-
-  // @ApiProperty({ required: false })
-  // @IsOptional()
-  // @IsString()
-  // phoneNumber?: string;
-
-
-  // @ApiProperty({ required: false })
-  // @IsString()
-  // @IsOptional()
-  // zipCode?: string
-
-  // @ApiProperty({ required: false })
-  // @IsString()
-  // @IsOptional()
-  // state?: string
-
-  // @ApiProperty({ required: false })
-  // @IsString()
-  // @IsOptional()
-  // country?: string
-
-  // @IsOptional()
-  // @IsString()
-  // mfa_secret?: string;
-
-  // @IsOptional()
-  // @IsString()
-  // recovery_code?: string;
-
-  // @IsOptional()
-  // @IsBoolean()
-  // is_mfa_started?: boolean;
-
-  // @IsOptional()
-  // @IsBoolean()
-  // is_mfa_enabled?: boolean;
-
-  // @ApiProperty()
   role: RoleEnum;
 
 }

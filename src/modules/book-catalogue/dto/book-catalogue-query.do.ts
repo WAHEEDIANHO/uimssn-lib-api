@@ -1,7 +1,8 @@
 import { PaginationQueryDto } from "@uimssn/base_module/utils/dto/pagination-query.dto";
 import { BookCatalogue } from "../entities/book-catalogue.entity";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, IsString } from "class-validator";
+import { IsEnum, IsOptional, IsString } from "class-validator";
+import { BookCatalogueTypeEnum } from "../enums/book-catalogue-type.enum";
 
 
 export class BookCatalogueQueryDto extends PaginationQueryDto<BookCatalogue> {
@@ -22,8 +23,8 @@ export class BookCatalogueQueryDto extends PaginationQueryDto<BookCatalogue> {
 
     @ApiProperty({ required: false })
     @IsOptional()
-    @IsString()
-    type?: string;
+    @IsEnum(BookCatalogueTypeEnum)
+    type?: BookCatalogueTypeEnum;
 
     @ApiProperty({ required: false })
     @IsOptional()

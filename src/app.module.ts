@@ -13,7 +13,9 @@ import { UserModule } from '@uimssn/base_module/user/user.module';
 import { EmailServiceModule } from '@uimssn/base_module/email-service/email-service.module';
 import { FileUploadModule } from '@uimssn/base_module/file-upload/file-upload.module';
 import { BookCatalogueModule } from '@uimssn/modules/book-catalogue/book-catalogue.module';
-import { BookRequestModule } from './modules/book-request/book-request.module';
+import { BookRequestModule } from '@uimssn/modules/book-request/book-request.module';
+import { InquiryModule } from '@uimssn/modules/sudent-inquiry/inquiry.module';
+import { FAQModule } from './modules/content-management/faq.module';
 
 
 @Module({
@@ -61,9 +63,11 @@ import { BookRequestModule } from './modules/book-request/book-request.module';
     FileUploadModule,
     BookCatalogueModule,
     BookRequestModule,
+    InquiryModule,
+    FAQModule
     // ScheduleModule.forRoot()
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
-export class AppModule {}
+export class AppModule { }

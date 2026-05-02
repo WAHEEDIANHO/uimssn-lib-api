@@ -6,11 +6,14 @@ import {
   Post,
   Req,
   Res,
+  BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 
-import { ApiExcludeController, ApiExcludeEndpoint, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiExcludeController, ApiExcludeEndpoint, ApiProperty, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { AuthGuard } from '@nestjs/passport';
+import { AuthGuard } from './guard/auth.guard';
+import { Roles } from './decorator/role.decorator';
 import { AuthService } from '@uimssn/base_module/auth/auth.service';
 import { UserService } from '@uimssn/base_module/user/user.service';
 import { ValidationPipe } from '@uimssn/base_module/utils/validation.pipe';
@@ -20,6 +23,9 @@ import { UserRole } from '@uimssn/base_module/user/entities/user.entity';
 import { ForgetPasswordDto } from '@uimssn/base_module/auth/dto/forgot-password.dto';
 import { VerifyForgetPasswordDto } from '@uimssn/base_module/auth/dto/verify-forget-password.dto';
 import { RoleEnum } from '../user/enums/role.enum';
+import { CreateUserDto } from '@uimssn/base_module/user/dto/create-user.dto';
+import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { ResendOtpDto } from './dto/resend-otp';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -51,13 +57,45 @@ export class AuthController {
       );
   }
 
-  // @UseInterceptors(CacheInterceptor)
-  // @Post('create-user')
-  // async createUser( @Body(new ValidationPipe()) createUserDto: CreateUserDto, @Res() res: Response ): Promise<Response> {
-  //   const user = await this.userService.createUser(createUserDto);
-  //   if(user == null) throw new BadRequestException("unable to create user")
-  //   return res.status(HttpStatus.OK).json(user);
-  // }
+  @Post('signup')
+  async signup(@Body(new ValidationPipe()) createUserDto: CreateUserDto, @Res() res: Response): Promise<Response> {
+    createUserDto.role = RoleEnum.USER;
+    const user = await this.userService.createUser(createUserDto);
+    if (user == null) throw new BadRequestException("unable to create user");
+
+    await this.authService.generateOtp(createUserDto.email);
+
+    return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, "User created successfully. Please verify your email with the OTP sent.", user));
+  }
+
+  @ApiBearerAuth()
+  @Roles(RoleEnum.SUPER_ADMIN)
+  @UseGuards(AuthGuard)
+  @Post('admin')
+  async createAdmin(@Body(new ValidationPipe()) createUserDto: CreateUserDto, @Res() res: Response): Promise<Response> {
+    createUserDto.role = RoleEnum.ADMIN;
+    const user = await this.userService.createUser(createUserDto);
+    if (user == null) throw new BadRequestException("unable to create user");
+
+    await this.authService.generateOtp(createUserDto.email);
+
+    return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, "User created successfully. Please verify your email with the OTP sent.", user));
+  }
+
+  @Post("resend-otp")
+  async resendOtp(@Body(new ValidationPipe()) resendOtp: ResendOtpDto, @Res() res: Response): Promise<Response> {
+    const {email} = resendOtp;
+    const user = await this.userService.findByUsername(email);
+    if (!user) {
+      return res.status(HttpStatus.NOT_FOUND).json(res.formatResponse(HttpStatus.NOT_FOUND, "User not found", {}));
+    }
+    if (user.isEmailVerified) {
+      return res.status(HttpStatus.BAD_REQUEST).json(res.formatResponse(HttpStatus.BAD_REQUEST, "User is already verified", {}));
+    }
+
+    await this.authService.generateOtp(email);
+    return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, "OTP sent successfully", {}));
+  }
 
   @Post('refreshToken')
   async refreshToken(
@@ -109,8 +147,6 @@ export class AuthController {
         email: googleUser.email,
         password: googleUser.id, // Using Google ID as password for registration
         role: RoleEnum.USER, // Default role
-        firstName: googleUser.firstName,
-        lastName: googleUser.lastName,
         fullName: `${googleUser.firstName} ${googleUser.lastName}`,
         // gender: UserGender.m,
       }, googleUser.id, true);
@@ -131,10 +167,23 @@ export class AuthController {
     }
   }
 
-  // @ApiExcludeEndpoint()
-  @Get('verify-email/:token')
-  async verifyEmail(@Res() res: Response, @Req() req: Request, @Param('token') token: string): Promise<Response> {
-    await this.userService.verifyUser(token);
+  @Post('verify-otp')
+  async verifyOtp(@Body() verifyOtp: VerifyOtpDto, @Res() res: Response): Promise<Response> {
+    const { email, otp } = verifyOtp;
+    const user = await this.userService.findByUsername(email);
+    if (!user) {
+      return res.status(HttpStatus.NOT_FOUND).json(res.formatResponse(HttpStatus.NOT_FOUND, 'User not found', {}));
+    }
+    if (user.isEmailVerified) {
+      return res.status(HttpStatus.BAD_REQUEST).json(res.formatResponse(HttpStatus.BAD_REQUEST, 'User already verified', {}));
+    }
+
+    const isValid = await this.authService.verifyOtp(email, otp);
+    if (!isValid) {
+      return res.status(HttpStatus.BAD_REQUEST).json(res.formatResponse(HttpStatus.BAD_REQUEST, 'Invalid or expired OTP', {}));
+    }
+
+    await this.userService.verifyUserById(user.id);
     return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, 'Email verified successfully', {}));
   }
 
@@ -150,7 +199,7 @@ export class AuthController {
     }
     // Logic to send reset password email
     // console.log(otp)
-    await this.authService.generateOtp(user.email);
+    await this.authService.generateOtp(user.email, 'reset_password');
     return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, 'Reset password email sent', {}));
   }
 
@@ -173,4 +222,4 @@ export class AuthController {
     await this.userService.changePassword(user, password);
     return res.status(HttpStatus.OK).json(res.formatResponse(HttpStatus.OK, 'Password reset successfully', {}));
   }
-}
+} 

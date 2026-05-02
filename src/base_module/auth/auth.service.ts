@@ -13,6 +13,7 @@ import { Otp } from '@uimssn/base_module/auth/entities/otp.entity';
 import { EmailServiceService } from '@uimssn/base_module/email-service/email-service.service';
 import { LoginDto } from '@uimssn/base_module/auth/dto/login.dto';
 import { AccountStatusEnum } from '@uimssn/base_module/user/enums/account-status.enum';
+import { SendEmailFromTemplate } from '../email-service/SendEmailFromTemplate';
 
 @Injectable()
 export class AuthService {
@@ -51,8 +52,12 @@ export class AuthService {
     };
   }
 
-  async generateOtp(email: string): Promise<string> {
+  async generateOtp(email: string, action: string = 'verify_email'): Promise<string> {
       const otp  = Math.floor(Math.random() * 900000 + 100000).toString(); // Generate a random 6-digit OTP
+      
+      const user = await this.userService.findByUsername(email);
+      const fullName = user?.fullName || 'User';
+
       let existingOtp = await this.otpServices.findOne({ where: { email } });
       if (existingOtp) {
         // If an OTP already exists for this email, update it
@@ -65,8 +70,19 @@ export class AuthService {
         storeOtp.otp = encryptedOtp;
         await this.otpServices.save(storeOtp);
       }
-      await this.emailService.sendOtpMail({otp, email})
+      
+      await SendEmailFromTemplate({
+        template: "otp",
+        to: email,
+        locals: {
+          fullName,
+          code: otp,
+          action,
+        }
+      });
+      
       return otp;
+
   }
 
   async verifyOtp(email: string, otp: string): Promise<boolean> {
