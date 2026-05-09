@@ -49,14 +49,14 @@ import { FAQModule } from './modules/content-management/faq.module';
     AuthModule,
     UtilsModule,
 
-    ThrottlerModule.forRoot({
-      throttlers: [
-        {
-          ttl: 60000, // 1 minute
-          limit: 5,
-        },
-      ],
-    }),
+    // ThrottlerModule.forRoot({
+    //   throttlers: [
+    //     {
+    //       ttl: 60000, // 1 minute
+    //       limit: 5,
+    //     },
+    //   ],
+    // }),
     LogsModule,
     UserModule,
     EmailServiceModule,
@@ -68,6 +68,6 @@ import { FAQModule } from './modules/content-management/faq.module';
     // ScheduleModule.forRoot()
   ],
   controllers: [],
-  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
+  providers: [],
 })
 export class AppModule { }
